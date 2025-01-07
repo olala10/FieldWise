@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.fieldwise.data.UserRepository
+import com.example.fieldwise.ui.screen.profile_creation.globalUsername
 import com.example.fieldwise.ui.theme.FieldWiseTheme
 import com.example.fieldwise.ui.theme.InterFontFamily
 import com.example.fieldwise.ui.widget.GoBackButton
@@ -38,35 +41,59 @@ import com.example.fieldwise.ui.widget.SetUpButton
 fun AddDailyGoalScreen(
     modifier: Modifier = Modifier,
     type: String?,
+    userRepository: UserRepository,
     NavigateToHome: () -> Unit,
-    MainButtonClick: () -> Unit
+    MainButtonClick: () -> Unit,
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        //Text(text = "Add Daily Goal: $type")
         val options = listOf("5 min / day", "10 min / day", "15 min / day", "20 min / day")
         val descriptions = listOf("Light", "Moderate", "Serious", "Intense")
 
         var selectedOption by remember { mutableStateOf("") }
         var showDialog by remember { mutableStateOf(false) }
 
-        Column(modifier = modifier.fillMaxSize()
-            .padding(start = 20.dp, end = 20.dp).testTag("AddDailyGoalScreen")) {
+        //saving daily goal
+        LaunchedEffect(selectedOption) {
+            val goalMinutes = when (selectedOption) {
+                "5 min / day" -> 5
+                "10 min / day" -> 10
+                "15 min / day" -> 15
+                "20 min / day" -> 20
+                else -> 0
+            }
+
+            if (goalMinutes > 0) {
+                userRepository.updateDailyGoal(globalUsername, goalMinutes)
+                MainButtonClick()
+            } else {
+                showDialog = true
+            }
+        }
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(start = 20.dp, end = 20.dp)
+                .testTag("AddDailyGoalScreen")
+        ) {
             Spacer(modifier = Modifier.height(70.dp))
             Row(
-                verticalAlignment = Alignment.CenterVertically // Align items in the center vertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 GoBackButton(onClick = { NavigateToHome() })
                 Spacer(modifier = Modifier.width(10.dp))
                 LinearProgress(target = 0.3f, progressType = ProgressType.LIGHT)
             }
 
-            Column(modifier = modifier
-                .fillMaxHeight()) {
+            Column(
+                modifier = modifier
+                    .fillMaxHeight()
+            ) {
                 Spacer(modifier = Modifier.height(30.dp))
-                Row{
+                Row {
                     Text(
                         text = "Set a daily goal",
                         color = Color(0xFF4B4B4B),
@@ -76,10 +103,9 @@ fun AddDailyGoalScreen(
                             fontFamily = InterFontFamily
                         )
                     )
-
                 }
                 Spacer(modifier = Modifier.height(3.dp))
-                Row{
+                Row {
                     Text(
                         text = "To spend a few minutes each day improving your learning",
                         color = Color(0xB24B4B4B),
@@ -89,40 +115,31 @@ fun AddDailyGoalScreen(
                             fontFamily = InterFontFamily
                         )
                     )
-
                 }
                 Spacer(modifier = Modifier.height(30.dp))
-                SetUpButton(options, descriptions, iconResIds = null, onSelectionChange = {selectedOption = it})
+                SetUpButton(
+                    options,
+                    descriptions,
+                    iconResIds = null,
+                    onSelectionChange = { selectedOption = it })
                 Spacer(modifier = Modifier.height(30.dp))
-                MainButton(button = "CONTINUE",
-                    onClick = { if (selectedOption.isEmpty()) {
-                        showDialog = true
-                    } else { MainButtonClick() }},
-                    mainButtonType = MainButtonType.BLUE, isEnable = true)
+                MainButton(
+                    button = "CONTINUE",
+                    onClick = {
+                        if (selectedOption.isEmpty()) {
+                            showDialog = true
+                        }
+                    },
+                    mainButtonType = MainButtonType.BLUE, isEnable = true
+                )
             }
         }
 
         if (showDialog) {
             PleaseSelectPopUp(
                 showDialog = showDialog,
-                onDismiss = {showDialog = false }
+                onDismiss = { showDialog = false }
             )
         }
-    }
-
-
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun SetDailyGoalPreview() {
-    FieldWiseTheme {
-        AddDailyGoalScreen(
-            type = "",
-            NavigateToHome = {},
-            MainButtonClick = {}
-        )
     }
 }

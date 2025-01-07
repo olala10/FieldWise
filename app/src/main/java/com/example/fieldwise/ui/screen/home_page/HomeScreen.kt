@@ -30,7 +30,6 @@ import com.example.fieldwise.ui.screen.profile_creation.globalUsername
 import androidx.compose.material.Text
 
 
-
 data class CourseFormat(val language: String, val subject: String, val course: String)
 
 @Composable
@@ -72,13 +71,15 @@ fun getFilteredCourseList(selectedLanguage: String, selectedCourse: String): Lis
 // You can access the data for example -- LISTOFDATA[2].course will return "Basics of Programming Language". Refer to ScoreBoard.kt for example implementation
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier,
-               NavigateToLeader: () -> Unit,
-               NavigateToAddCourse: () -> Unit,
-               NavigateToAddLanguage: () -> Unit,
-               NavigateToProfile: () -> Unit,
-               NavigateToLessons: () -> Unit,
-               NavigateToQuiz: () -> Unit) {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    NavigateToLeader: () -> Unit,
+    NavigateToAddCourse: () -> Unit,
+    NavigateToAddLanguage: () -> Unit,
+    NavigateToProfile: () -> Unit,
+    NavigateToLessons: () -> Unit,
+    NavigateToQuiz: () -> Unit
+) {
 
     val context = LocalContext.current
     val userRepository = DatabaseProvider.provideUserRepository(context)
@@ -141,7 +142,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                     NavigateToAddLanguage = NavigateToAddLanguage
                 )
                 Spacer(modifier = Modifier.weight(1f)) // Add spacer to push items to the right
-                StreakItem(modifier = Modifier.size(40.dp), steak = 5)
+                StreakItem(modifier = Modifier.size(40.dp), steak = 0)
                 ProfileIconButton(onClick = { NavigateToProfile() })
             }
             Spacer(modifier = Modifier.height(30.dp))
@@ -155,7 +156,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                             description = "Subject: ${course.subject}",
                             cardType = CardType.BLUE,
                             progress = 0f,
-                            complete = false, 
+                            complete = false,
                             NavigateToLessons = NavigateToLessons,
                             NavigateToQuiz = NavigateToQuiz
                         )
@@ -182,8 +183,6 @@ fun HomeScreen(modifier: Modifier = Modifier,
             }
 
 
-
-
         }
         Row(
             modifier = Modifier
@@ -193,7 +192,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Box {
-                HomeButton(onClick = {  })
+                HomeButton(onClick = { })
             }
             Box {
                 LeaderBoardButton(onClick = { NavigateToLeader() })

@@ -20,4 +20,20 @@ class UserRepository(private val userProfileDao: UserProfileDao) {
     suspend fun getUserProfile(username: String): UserProfile? {
         return userProfileDao.getUserProfile(username)
     }
+
+    //updating daily goal
+    suspend fun updateDailyGoal(username: String, newGoal: Int) = withContext(Dispatchers.IO) {
+        val userProfile = userProfileDao.getUserProfile(username)
+        if (userProfile != null) {
+            val updatedProfile = userProfile.copy(dailyGoal = newGoal)
+            userProfileDao.insertUserProfile(updatedProfile) // Zaktualizowanie profilu z nowym celem
+        }
+    }
+
+    //getting daily goal
+    suspend fun getDailyGoal(username: String): Int? {
+        val userProfile = userProfileDao.getUserProfile(username)
+        return userProfile?.dailyGoal
+    }
 }
+

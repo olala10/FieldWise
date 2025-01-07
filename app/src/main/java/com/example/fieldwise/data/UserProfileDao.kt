@@ -12,4 +12,7 @@ interface UserProfileDao {
 
     @Query("SELECT * FROM user_profile WHERE username = :username LIMIT 1")
     suspend fun getUserProfile(username: String): UserProfile?
+
+    @Query("SELECT dailyGoal FROM user_profile WHERE username = :username")
+    suspend fun getDailyGoal(username: String): Int?
 }

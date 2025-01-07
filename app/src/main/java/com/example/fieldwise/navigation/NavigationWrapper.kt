@@ -31,6 +31,10 @@ import com.example.fieldwise.ui.screen.profile_preference.ProfileScreen
 import com.example.fieldwise.ui.screen.profile_preference.SettingScreen
 import com.example.fieldwise.ui.widget.CardType
 import com.example.fieldwise.ui.widget.LessonCard
+import android.content.Context
+import com.example.fieldwise.data.UserProfileDao
+import com.example.fieldwise.core.DatabaseProvider
+
 
 // Define Routes as constants
 object Routes {
@@ -62,7 +66,10 @@ object Routes {
 }
 
 @Composable
-fun NavigationWrapper() {
+fun NavigationWrapper(context:Context) {
+
+    val userRepository = DatabaseProvider.provideUserRepository(context)
+
     val navController = rememberNavController()
     NavHost(
         navController = navController,
@@ -70,7 +77,7 @@ fun NavigationWrapper() {
     ) {
         // Begin in SplashScreen
         composable(Routes.Splash) {
-            SplashScreen { 
+            SplashScreen {
                 navController.navigate(Routes.Loading) // Navigate to UserNameScreen
             }
         }
@@ -100,7 +107,7 @@ fun NavigationWrapper() {
             EnableNotifyScreen(
                 NavigateToCourse = {navController.navigate(Routes.Course)},
                 NavigateToGoal =  { navController.navigate(Routes.DailyGoal)}
-                )
+            )
         }
 
         composable(Routes.Course) {
@@ -122,7 +129,7 @@ fun NavigationWrapper() {
                 NavigateToProfile = {navController.navigate(Routes.ProfileScreen)},
                 NavigateToLessons = {navController.navigate(Routes.SelectExercise)},
                 NavigateToQuiz = {navController.navigate("${Routes.ListeningScreen1}/quiz")}
-                )
+            )
         }
 
         composable("${Routes.LeaderBoard}/{type}") { backStackEntry ->
@@ -222,21 +229,21 @@ fun NavigationWrapper() {
 
         composable("${Routes.ListeningScreen1}/{type}") { backStackEntry ->
             var type = backStackEntry.arguments?.getString("type")
-           ListeningScreen1 (
-               type = type,
-               NextExercise = {
-                   if (type == "exercise") {navController.navigate("${Routes.ListeningScreen2}/exercise")}
-                   else if (type == "quiz") {navController.navigate("${Routes.ListeningScreen2}/quiz")}
-               },
-               ExitLesson = {
-                   if (type == "exercise") {navController.navigate(Routes.SelectExercise)}
-                else if (type == "quiz") {navController.navigate(Routes.Home)}}
-           )
+            ListeningScreen1 (
+                type = type,
+                NextExercise = {
+                    if (type == "exercise") {navController.navigate("${Routes.ListeningScreen2}/exercise")}
+                    else if (type == "quiz") {navController.navigate("${Routes.ListeningScreen2}/quiz")}
+                },
+                ExitLesson = {
+                    if (type == "exercise") {navController.navigate(Routes.SelectExercise)}
+                    else if (type == "quiz") {navController.navigate(Routes.Home)}}
+            )
 
-       }
+        }
 
         composable("${Routes.ListeningScreen2}/{type}") { backStackEntry ->
-        var type = backStackEntry.arguments?.getString("type")
+            var type = backStackEntry.arguments?.getString("type")
             ListeningScreen2(
                 type = type,
                 NextExercise = {
@@ -319,8 +326,7 @@ fun NavigationWrapper() {
         }
 
 
-        }
-
-
     }
 
+
+}

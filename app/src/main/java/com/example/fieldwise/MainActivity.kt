@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import com.example.fieldwise.navigation.NavigationWrapper
 import com.example.fieldwise.ui.theme.FieldWiseTheme
 
@@ -14,7 +15,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FieldWiseTheme {
-                NavigationWrapper() // Llama al wrapper de navegación
+                val context = androidx.compose.ui.platform.LocalContext.current
+                NavigationWrapper(context) // Llama al wrapper de navegación
             }
         }
     }
